@@ -74,85 +74,62 @@
 <script src="{{ asset('js/plugins/sweetalert.min.js') }} "></script>
 <script src="{{ asset('js/socket.io.js') }}"></script>
 <script>
+
 	var socket = io('http://localhost:3000');
 	var data = {!! $data_slot !!};
 	var nip_user = {{ Auth::user()->nip }};
+	var jsonData = {!! $data_user !!};
+
 	$(document).ready(function(){
-		var nip_user = {{ Auth::user()->nip }};
-		$.ajax({
-	    	type: 'get',
-	        url: '/member/slot/api/',
-	        datatype : 'json',
-	        data: {
-	        	'_token': $('input[name=_token]').val(),
-	        	'id': nip_user,
-	        },
-	        success: function(response){
-	        	$(document).ajaxSuccess(function(){
-	        		var jsonData = JSON.stringify(response);
-	        		$('#main-slot ul li').remove();
-	        		for (var i = 0; i < data.length; i++) {
-	        			if (data[i].status === "kosong" ){
-	        				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-primary slot-cl" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
-	        				if(jsonData != "[]"){
-	        					$('#' + data[i].name).prop("disabled",true);
-	        					console.log('success disabled kosong');
-	        				};
-	        			} else if (data[i].status === "terisi"){
-	        				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-danger slot-cl" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
-	        			} else {
-	        				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-warning slot-cl" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
-	        			};
-	        		};
-				});
-	        }
-	    });
+		// console.log(jsonData.length);
+		$('#main-slot ul li').remove();
+
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].status === "kosong"){
+				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-primary slot-cl slot-f" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
+			} else if (data[i].status === "terisi"){
+				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-danger slot-cl" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
+					console.log("success 2");
+			} else {
+				$('#main-slot ul').append('<li style="margin-bottom: 5px"><button id="' + data[i].name + '" class="btn btn-warning slot-cl" style="width: 90px;"><i class="fa fa-car"></i>' + data[i].name + '</button></li>');
+			};
+
+			if ((jsonData.length === 0) && (data[i].status === "dipesan")){
+				$('#' + data[i].name).prop("disabled",true);
+			};
+
+			if ((jsonData.length !== 0) && (data[i].status === "kosong")){
+				$('#' + data[i].name).prop("disabled",true);
+				console.log('success 1');
+			};
+
+		};
 	});
 
 	$(document).on('click', '.slot-cl', function() {
-		var id = this.id; //Get button ID    
+		var id = this.id; //Get button ID
+		// var str = id.substring(4, 6);
+		// var res = str.replace(/^0+/, '');    
 	    $('#slot-view #ttl').text(id);
 	    $('input[name=slotID]').attr('value', id);
 	    $('#slot-view #ttl').removeClass("label-warning");
 	    $('#slot-view #ttl').removeClass("label-danger");
 	    $('#slot-view #ttl').addClass("label-success");
-	    $.ajax({
-	    	type: 'get',
-	        url: '/member/slot/api/',
-	        dataType : 'json',
-	        data: {
-	        	'_token': $('input[name=_token]').val(),
-	        	'id': nip_user,
-	        },
-	        success: function(response){
-	        	var jsonData = JSON.stringify(response);
-	        	console.log("jsonData = " + jsonData);
-	        	console.log("response = " + response);
-	        	if (jsonData != "[]") {
-	        		$('#slot-view .lead').removeClass('label');
-	        		$('#slot-view  button').remove();
-	        		$('#slot-view .lead').html('<br><span class="label label-success">You Have Been Booked This Slot</span>');
-	        		$('<button id="cancel-booking" class="btn btn-warning" style="width: 90px;"><i class="fa fa-car"></i>cancel</button>').insertAfter(".lead");
-	        	} else {
-	        		$('#'+id).text(id);
-	        		$('#slot-view .lead span').remove();
-	        		$('#slot-view  button').remove();
-	        		for (var i = data.length - 1; i >= 0; i--) {
-	        			if(data[i].status == "kosong"){
-	        				$('#slot-view .lead').html('<br><span class="label label-success ready_booking">This Slot is Free </span>');
-	        			} else if (data[i].status == "dipesan") {
-	        				$('#slot-view .lead').html('<br><span class="label label-warning">This Slot is booked </span>');
-	        			} else {
-	        				$('#slot-view .lead').html('<br><span class="label label-danger">This Slot is filled </span>');
-	        			}
-	        		}
-	        		var ch = $('#slot-view .lead span').hasClass('ready_booking');
-	        		if(ch){
-	        			$('<button id="req-booking" class="btn btn-primary" style="width: 90px;">Booking</button>').insertAfter(".lead");
-	        		}
-	        	};
-	        }
-	    });
+    	console.log(jsonData);
+    	if (jsonData.length !== 0) {
+    		$('#slot-view .lead').removeClass('label');
+    		$('#slot-view  button').remove();
+    		$('#slot-view .lead').html('<br><span class="label label-success">You Have Been Booked This Slot</span>');
+    		$('<button id="cancel-booking" class="btn btn-warning" style="width: 90px;"><i class="fa fa-car"></i>cancel</button>').insertAfter(".lead");
+    	} else {
+    		$('#slot-view .lead span').remove();
+    		$('#slot-view  button').remove();
+    		$('#slot-view .lead').html('<br><span class="label label-success ready_booking">This Slot is Free </span>');
+    		var ch = $('#slot-view .lead span').hasClass('ready_booking');
+    		if(ch){
+    			$('<button id="req-booking" class="btn btn-primary" style="width: 90px;">Booking</button>').insertAfter(".lead");
+    		};
+    	};
 	});
 
 	$(document).on('click', '#req-booking', function () {
@@ -227,8 +204,5 @@
 		$('#slot-view .lead').removeClass('span');
 		$('#slot-view .lead').html('<br><span class="label label-success">Cancelled</span>');
 	});
-
-
-
 </script>
 @endsection

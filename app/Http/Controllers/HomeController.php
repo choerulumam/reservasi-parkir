@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\SlotParkir;
 use App\Parkir;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -35,6 +36,8 @@ class HomeController extends Controller
 
     public function slot()
     {
+        $user_id = Auth::user()->nip;
+        $data_user = Parkir::where('user_id', $user_id)->get();
         $data_slot = SlotParkir::all();
         $free_slot = SlotParkir::count();
         $reserved_slot = SlotParkir::where('status', 'dipesan')->count();
@@ -42,16 +45,16 @@ class HomeController extends Controller
         $empty_slot = SlotParkir::where('status', 'kosong')->count();
         $parking_list = Parkir::all();
 
-        return view('pages.member.slot', compact('data_slot', 'free_slot', 'reserved_slot', 'filled_slot', 'empty_slot', 'parkir_list'));
+        return view('pages.member.slot', compact('data_user', 'data_slot', 'free_slot', 'reserved_slot', 'filled_slot', 'empty_slot', 'parkir_list'));
     }
 
     public function slotuser(Request $activated) 
     {
         $data = Parkir::where(function ($query) use ($activated) {
-            $query->where('user_id', '=', $activated->id);
+             $query->where('user_id', '=', $activated->id);
         })->get();
 
-        return $data->toJson();
+        return response()->json($data);
     }
 
     public function monitoring() {
