@@ -27,7 +27,7 @@ class ApiUserController extends Controller
     	$data->save();
 
     	$c = Parkir::count();
-
+ 
     	$insert = new Parkir;
     	$insert->id = $c + 1;
     	$insert->user_id = $request->user_id;

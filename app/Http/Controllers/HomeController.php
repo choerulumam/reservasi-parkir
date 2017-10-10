@@ -48,6 +48,7 @@ class HomeController extends Controller
         return view('pages.member.slot', compact('data_user', 'data_slot', 'free_slot', 'reserved_slot', 'filled_slot', 'empty_slot', 'parkir_list'));
     }
 
+    //ajax api
     public function slotuser(Request $activated) 
     {
         $data = Parkir::where(function ($query) use ($activated) {

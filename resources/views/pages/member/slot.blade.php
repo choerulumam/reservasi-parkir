@@ -170,6 +170,7 @@
 	    });
 	});
 
+	//when button cancel clicked
 	$(document).on('click', '#cancel-booking', function() {
 	    swal({
 	        title: "Are you sure?",
