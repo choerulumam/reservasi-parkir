@@ -14,7 +14,7 @@ class AddForeignKeyToBookingLogs extends Migration
     public function up()
     {
         Schema::table('Booking_Logs', function (Blueprint $table) {
-            $table->string('nip')->after('id');
+            $table->string('nip')->unique();
             $table->foreign('nip')->references('nip')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });    
     }

@@ -252,21 +252,6 @@
   		});
 
     $(document).on('click', '.delete-modal', function() {
-        $('#footer_action_button').text(" Delete");
-        $('#footer_action_button').removeClass('fa-pencil-square-o');
-        $('#footer_action_button').addClass('fa-trash-o');
-        $('.actionBtn').removeClass('btn-success');
-        $('.actionBtn').addClass('btn-danger');
-        $('.actionBtn').addClass('delete');
-        $('.modal-title').text('Delete');
-        $('.did').text($(this).data('id'));
-        $('.deleteContent').show();
-        $('.form-horizontal').hide();
-        $('.dname').html($(this).data('name'));
-        $('#myModal').modal('show');
-    });
-
-    $(document).on('click', '.delete-modal', function() {
 	    $('#footer_action_button').text(" Delete");
 	    $('#footer_action_button').removeClass('fa-check-square-o');
 	    $('#footer_action_button').addClass('fa-pencil-square-o');
